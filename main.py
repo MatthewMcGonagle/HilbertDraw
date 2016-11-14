@@ -58,23 +58,34 @@ def floorfunc2(position, logwidth):
 				minimum = coord[i][j]
 	return minimum
 
-initconfig = hd.HilbertConfig(hd.LOWLEFTSTART, hd.COUNTERCLOCKWISE, [0,0], [0,0], squarelevels)
-squaretree = hd.HilbertSquare(None, initconfig)
-#squaretree.generatechildren(squarelevels)
-squaretree.generatewithmin(squarelevels, floorfunc2)
-positions = []
-#squaretree.getpositionswithmin(positions)
-squaretree.getpositions(positions)
-
-level = 1 
-logwidth = power-1 
 initsymmetry = hd.SquareSymmetry(0,0)
-initposition = [0,0]
-backwards = 0
-squaretree2 = hd.HilbertSquare2(initsymmetry, initposition, logwidth, level, backwards)
-squaretree2.generatechildren(level)
+initlevel = 0
+numlevels = 1
+squarelevels = numlevels
+squaretree = hd.HilbertSquare3(initsymmetry, 0) 
+squaretree.generatechildren(numlevels)
 positions = []
-squaretree2.getpositions(positions)
+squaretree.generatepositions(positions, [0,0], 2**numlevels)
+print(positions)
+
+#initconfig = hd.HilbertConfig(hd.LOWLEFTSTART, hd.COUNTERCLOCKWISE, [0,0], [0,0], squarelevels)
+#squaretree = hd.HilbertSquare(None, initconfig)
+#squaretree.generatechildren(squarelevels)
+#squaretree.generatewithmin(squarelevels, floorfunc2)
+#positions = []
+#squaretree.getpositionswithmin(positions)
+#squaretree.getpositions(positions)
+#
+#level = 1 
+#logwidth = power-1 
+#initsymmetry = hd.SquareSymmetry(0,0)
+#initposition = [0,0]
+#backwards = 0
+#squaretree2 = hd.HilbertSquare2(initsymmetry, initposition, logwidth, level, backwards)
+#squaretree2.generatechildren(level)
+#positions = []
+#squaretree2.getpositions(positions)
+
 print("Hilbert Curve generation done")
 
 #squaretree = hd.FourSquares(None, hd.LOWLEFTSTART, hd.COUNTERCLOCKWISE)

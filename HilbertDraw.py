@@ -39,6 +39,52 @@ class SquareSymmetry:
 			newvector[0] *= -1
 		return newvector
 
+	def actindex(self, index):
+		newindex = (self.rotation + index) % 4
+		if self.reflection > 0:
+			newindex = (3*index) % 4
+		return newindex
+
+class HilbertSquare3:
+
+	def __init__(self, symmetry, level):
+		self.symmetry = symmetry
+		self.level = level
+		self.children = []
+
+	def generatechildren(self, numlevels):
+		if self.level > numlevels:
+			return
+		elif self.children:
+			return
+
+		newlevel = self.level + 1
+		newsymmetry = self.symmetry.times(SquareSymmetry(1,1))
+		self.children.append(HilbertSquare3(newsymmetry, newlevel))
+
+		newsymmetry = self.symmetry
+		self.children.append(HilbertSquare3(newsymmetry, newlevel))
+		self.children.append(HilbertSquare3(newsymmetry, newlevel))
+
+		newsymmetry = self.symmetry.times(SquareSymmetry(1,3))
+		self.children.append(HilbertSquare3(newsymmetry, newlevel))
+
+		for i in range(4):
+			self.children[i].generatechildren(numlevels)
+	def generatepositions(self, currentlist, myposition, mywidth):
+		if not self.children:
+			currentlist.append(myposition)
+			return
+		newwidth = mywidth/2
+		offsets = [[0,0], [0,newwidth], [newwidth,newwidth], [newwidth,0]]
+		for i in range(4):
+			newi = self.symmetry.actindex(i)
+			newposition = myposition.copy()
+			for j in range(2):
+				newposition[j] += offsets[newi][j]
+			self.children[i].generatepositions(currentlist, newposition, newwidth) 
+
+
 class HilbertSquare2:
 
 	def __init__(self, symmetry, position, logwidth, level, backwards):
