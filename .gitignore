@@ -1,0 +1,12 @@
+# ignore files ending with ~
+*~
+
+# ignore files .swp and .swo files, used by Vim
+*.swp
+*.swo
+
+# ignore picture files
+*.png
+
+# ignore pycache
+__pycache__/
