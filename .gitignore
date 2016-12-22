@@ -1,6 +1,9 @@
 # ignore files ending with ~
 *~
 
+# ignore test python file
+imagetest.py
+
 # ignore files .swp and .swo files, used by Vim
 *.swp
 *.swo
