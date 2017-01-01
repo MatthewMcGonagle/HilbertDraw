@@ -10,6 +10,9 @@ imagetest.py
 
 # ignore picture files
 *.png
+*.jpg
+*.bmp
+*.svg
 
 # ignore pycache
 __pycache__/
