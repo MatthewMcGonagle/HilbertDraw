@@ -13,7 +13,7 @@ initlevel = 0
 numlevels = 7
 treewidth = 2**numlevels
 
-myimage = Image.open('mario.png').convert('LA')
+myimage = Image.open('hilbertcartoon.png').convert('LA')
 flatlist = list(myimage.getdata())
 (imwidth, imheight) = myimage.size
 
@@ -39,7 +39,8 @@ squaretree.generatepositions(positions)
 xpoints = [positions[i][0] for i in range(len(positions))]
 ypoints = [treeheight-positions[i][1] for i in range(len(positions))]
 
-fig = plt.figure(figsize = (2*8.6,2*3.2), dpi = 100, frameon = False)
+#fig = plt.figure(figsize = (2*8.6,2*3.2), dpi = 100, frameon = False)
+fig = plt.figure(dpi = 300, frameon = False)
 plt.plot(xpoints, ypoints, color = "blue")
 
 plt.axis([-1, treewidth+1, -1, treeheight+1])

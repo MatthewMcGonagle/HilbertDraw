@@ -13,6 +13,9 @@ imagetest.py
 *.jpg
 *.bmp
 *.svg
+*.xcf
+!hilbertcartoon.svg
+!hilbertcartoon.png
 
 # ignore pycache
 __pycache__/
