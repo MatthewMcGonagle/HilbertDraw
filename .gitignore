@@ -16,6 +16,7 @@ imagetest.py
 *.xcf
 !hilbertcartoon.svg
 !hilbertcartoon.png
+!Outputbw.png
 
 # ignore pycache
 __pycache__/
