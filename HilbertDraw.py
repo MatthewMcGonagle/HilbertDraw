@@ -129,13 +129,57 @@ class SquareSymmetry:
         return newindex
 
 class HilbertTree:
+    '''
+    Class for generating sub-square grid for Hilbert pseudo-curves. Keeps track of symmetries in
+    each square and the positions associated with each sub-square. Generates this info to a certain
+    level of pseudo-curves. This is class is only used to make basic Hilbert pseudo-curves.
+
+    Each instance represents a node in the tree of sub-squares, i.e. a single square at a certain level. 
+    The children of an instance are its 4 sub-squares at the next level.
+
+    Members
+    -------
+    self.symmetry : SquareSymmetry
+        The symmetry transformation associated with this square, that is the orientation of the 
+        Hilbert pseudo-curve for this level and this square.
+    self.level : Int
+        The level of Hilbert pseudo-curve this node is on, i.e. the height from the root node. 
+    self.children : List of HilbertTree
+        The sub-squares of this square that are a part of the next level of Hilbert pseudo-curve.
+    '''
 
     def __init__(self, symmetry, level):
+        '''
+        Initializer
+    
+        Parameters
+        ----------
+        self : self
+            Implicit reference to self.
+        symmetry : SquareSymmetry
+            The symmtery transformation of the orientation of the Hilbert pseudo-curve for this square.
+        level : Int
+            The level of Hilbert pseudo-curve this square is associated to, i.e. the height from the
+            root node of the tree.
+        '''
         self.symmetry = symmetry
         self.level = level
         self.children = []
 
     def generatechildren(self, numlevels):
+        '''
+        Create children of this node. The children are part of the Hilbert pseudo-curve at the next level
+        and make by dividing this square into an even 2x2 grid of sub-squares. They inherit orientations
+        in a certain way from the orientation of this node.
+
+        The function continues to recurse down the tree (depth first) to create a certain number of levels.
+        Parameters
+        ----------
+        self : self
+            Implicit reference to self.
+        numlevels: Int
+            The number of levels to create. Function will not beyond numlevels. 
+        '''
         if self.level > numlevels:
             return
         elif self.children:
@@ -156,6 +200,22 @@ class HilbertTree:
             self.children[i].generatechildren(numlevels)
 
     def generatepositions(self, currentlist, myposition, mywidth):
+        '''
+        Recursively add the positions of the leaf sub-squares to a list of square positions. If
+        this node is a leaf, then add it to the list of positions. Else, use the position of this 
+        node to calculate the positions of the children and then recurse down.
+
+        Parameters
+        ----------
+        self : self
+            Implicit reference to self.
+        currentlist : Array-like
+            Holds a reference to the current list of positions so far.
+        mypositions : Array-like
+            Has 2 elements; the xy position of this square.
+        mywidth : Int
+            The width of this square.
+        '''
         if not self.children:
             currentlist.append(myposition)
             return
