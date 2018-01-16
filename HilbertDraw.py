@@ -229,8 +229,62 @@ class HilbertTree:
             self.children[i].generatepositions(currentlist, newposition, newwidth) 
 
 class HilbertTreeMaxed(HilbertTree):
+    '''
+    Class to draw a picture using different levels of Hilbert pseudo-curves. 
+    To determine whether to sub-divide a sub-square into the next level, use a max function 
+    f(x,y) for this sub-square. This max function gives the maximum level to descend to for 
+    any sub-square with position at (x,y). 
+
+    So for an input image, one should use a maximum function f(x,y) defined using the 
+    pixel colors in the image. 
+
+    An instance of this class represents a node in the quad-tree that gives the sub-divisions of the 
+    sub-squares defining the Hilbert pseudo-curves.
+
+    This class inherits properties from HilbertTree.
+
+    Members
+    -------
+    self.symmetry : SquareSymmetry
+        Represents the orientation of this sub-square relative to the standard orientation. 
+    self.level : Int
+        Represents the level of the Hilbert pseudo-curve that this node is a part of.
+    self.position : Array-like
+        Has two members. Represents the position (x,y) of this node in space.
+    self.width : Int
+        The width of this sub-square.
+    self.height : Int
+        The height of this sub-square.
+    self.maxfunc : function
+        A function from positions (x,y) (Array-like with two members) into Int. The function
+            should give the max level of Hilbert pseudo-curve to associate with a sub-square at
+            position (x,y).
+    '''
 
     def __init__(self, symmetry, level, position, width, height, maxfunc):
+        ''' 
+        Initializer that calls parent initializer for HilbertTree
+        
+        Parameters
+        ----------
+        self : self
+            Implicit reference to self.
+        symmetry : SquareSymmetry
+            Reperesents the orientation of this sub-square relative to the standard orientation.
+        level : Int
+            The level of Hilbert pseudo-curve to associate with this sub-square node.
+        position : Array-like
+            Should have two elements representing the (x,y) position of this sub-square.
+        width : Int
+            The width of this sub-square.
+        height : Int
+            The height of this sub-square.
+        maxfunc : function
+            The function to determine how far to sub-divide a given sub-square. Should be a function from 
+            positions (x,y) (represented as array-likes with two elements) into Int. The position
+            of a sub-square is used to determine whether to sub-divide further based on the output
+            of this function.
+        ''' 
         super().__init__(symmetry, level)
         self.position = position
         self.width = width
@@ -238,6 +292,20 @@ class HilbertTreeMaxed(HilbertTree):
         self.maxfunc = maxfunc
 
     def generatechildren(self, numlevels):
+        '''
+        Generates the children nodes of this sub-square. This over-rides the generatechildren of the 
+        parent class HilbertTree. Now we use self.maxfunc to decide if we have reached a high enough
+        level of pseudo-curve using self.position. We also put a global maximum on the levels using 
+        the parameter numlevels. If we have not reached the max level for this sub-square, then 
+        we sub-divide and find the children.
+        
+        Parameters
+        ----------
+        self : self
+            Implicit reference to self.
+        numlevels : Int
+            The global maximum number of levels to make the tree. 
+        '''
         if self.level > numlevels or self.level > self.maxfunc(self.position, self.width, self.height):
             return
         elif self.children:
@@ -263,6 +331,17 @@ class HilbertTreeMaxed(HilbertTree):
             self.children[i].generatechildren(numlevels)
         
     def generatepositions(self, currentlist):
+        '''
+        Add the leaf sub-nodes of this node to a current list of positions. The order that they are added is the
+        order they occur in the curve representing the image. This is accomplished using a depth first traversal. 
+        
+        Parameters
+        ----------
+        self : self
+            Implicit reference to self.
+        currentlist : Array-like
+            The list of positions to add the leaf positions to.
+        '''
         if (not self.children):
             currentlist.append(self.position)
             return
