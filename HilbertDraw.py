@@ -513,8 +513,37 @@ class LevelFilter:
         self.y1 = min(self.y1, self.imheight)
 
 class UseMax(LevelFilter):
+    '''
+    Class for setting the max level Hilbert pseudo-curve function of a sub-square is given by finding
+    the maximum level value inside the pixel values contained within the sub-square.
+
+    The Parent class is LevelFilter, and the class UseMax contains no extra member variables.
+    '''
 
     def filterfunc(self, pos, width, height):
+        '''
+        The max level Hilbert pseudo-curve function for the class UseMax. The max level for the 
+        subsquare of certain position, width, and height is given by the maximum pixel level for
+        the portion of the pixels contained within the sub-square.
+
+        Parameters
+        ----------
+        self : self
+            Implicit reference to self.
+        pos : Array-like
+            Should contain two members of floating point values giving the x and y position of the
+            sub-square.
+        width : Float
+            The width of the sub-square.
+        height : Float
+            The height of the sub-square.
+
+        Returns
+        -------
+        Int
+            Maximum pixel level for all of the pixels contained within the rectangle defined by the
+            position sub-square, the sub-squares width, and the sub-squares height.
+        '''
         floorlevel = 0
         levelsmax = 0
         self.setupxy(pos, width, height)
@@ -529,8 +558,36 @@ class UseMax(LevelFilter):
             return levelsmax 
 
 class UseAverage(LevelFilter):
+    '''
+    Class for defining the maximum Hilbert pseudo-curve level to be the average of the pixel levels 
+    for those pixels that occur within the sub-square.
+    
+    Parent class is LevelFilter, and the class UseAverage contains no member variables not in LevelFilter.
+    '''
 
     def filterfunc(self, pos, width, height):
+        '''
+        Function giving the maximum Hilbert pseudo-curve level for the sub-square of a given position, width,
+        and height. The max level is the average of all of the pixel level data for the pixels within the
+        rectangle of the same position, width, and height. 
+    
+        Parameters
+        ----------
+        self : self
+            Implicit reference to self.
+        pos : Array-like
+            Should have two floating points values representing the x and y position of the sub-square.
+        width : Float
+            The width of the sub-square.
+        height : Float
+            The height of the sub-square. 
+
+        Returns
+        -------
+        Float
+            Maximum level for Hilbert pseudo-curves for given sub-square; is the average of all pixel levels
+            for pixels within rectangle of same position, width, and height as the sub-square.
+        '''
         dx = 1
         dy = 1
         average = 0
@@ -549,12 +606,64 @@ class UseAverage(LevelFilter):
         return average 
 
 class UseMajority(LevelFilter):
+    '''
+    Class for using the majority of levels of pixels within sub-square to determine the max level of Hilbert
+    pseudo-curve. Uses the pixel data that is contained in the rectangle defined by the sub-square's position,
+    width, and height to find the max level. The max level is defined to be the majority level over all of this
+    subset of data.
+
+    Members
+    -------
+    levels : 2D array-like
+        2D array of pixel level information. Note this is not pixel color; there should be some preprocessing
+        performed first, e.g. use class ImageProcessing. 
+    numlevels : Int
+        The maximum number of levels. Used to construct array counting frequency of levels in pixel level info.
+    '''
 
     def __init__(self, levels, numlevels):
+        '''
+        Initializer
+
+        Parameters
+        ----------
+        self : self
+            Implicit reference to self.
+        levels : 2D array-like
+            2D array of pixel level info. Note this is not pixel color; there should be some preprocessing
+            performed first, e.g. use class ImageProcessing. 
+        numlevels : Int
+            The maximum number of levels. Used to construct array counting frequency of levels in pixel level info.
+        ''' 
+
         super().__init__(levels)
         self.numlevels = numlevels
 
     def filterfunc(self, pos, width, height):
+        '''
+        Function to determine max level Hilbert pseudo-curve for given sub-square. Use the majority pixel level
+        for the pixel data contained within the sub-square. There is also a filter involving meeting a minimum
+        percent of the given pixels. If none of the levels meets the minimum floor, then it returns the max
+        level, insuring the sub-square will be sub-divided if it isn't at the max level. 
+        
+        Parameters
+        ----------
+        self : self
+            Implicit reference to self.
+        pos : Array-like
+            Should be array-like containing two floating point values representing the x and y coordinate of
+            the position of the sub-square.
+        width : Float
+            The width of the sub-square.
+        height : Float
+            The height of the sub-square.
+
+        Returns
+        -------
+        Int
+            The majority level among the pixel level data for the pixels that are inside the sub-square if the
+            majority is above a certain floor percentage; else, return the max number of levels in the tree.
+        '''
         floorpercent = 0.99
         minreturn = 0 # numlevels-3 
     
