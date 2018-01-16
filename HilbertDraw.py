@@ -251,9 +251,9 @@ class HilbertTreeMaxed(HilbertTree):
         Represents the level of the Hilbert pseudo-curve that this node is a part of.
     self.position : Array-like
         Has two members. Represents the position (x,y) of this node in space.
-    self.width : Int
+    self.width : Float 
         The width of this sub-square.
-    self.height : Int
+    self.height : Float 
         The height of this sub-square.
     self.maxfunc : function
         A function from positions (x,y) (Array-like with two members) into Int. The function
@@ -409,8 +409,45 @@ class ImageProcessing:
                 bw[i][j] = level
 
 class LevelFilter:
+    '''
+    Template class that provides functionality for contructing functions for determining the max
+    number of levels of sub-square to assign to any given position. Note, this parent class doesn't
+    really have any actual funtionality for constructing such functions. It just provides functions that
+    will be necessary for constructing them from a 2D array of pixel levels.
+
+    Members
+    -------
+    levels : 2D Array-like
+        Pixel levels coming from an image. Note this isn't the pixel colors. They should first be 
+        pre-processed in some way, e.g. use the class ImageProcessing. 
+    imwidth : Int
+        The width of the levels data coming from the image.
+    imheight : Int
+        The height of the levels data coming from the image. 
+    x0 : Int
+        The x position of the first corner of the image data to associate with a sub-square.
+    x1 : Int
+        The x position of the second corner of the image data to associate with a sub-square.
+    y0 : Int
+        The y position of the first corner of the image data to associate with a sub-square.
+    y1 : Int
+        The y position of the second corner of the image data to associate with a sub-square. 
+    '''
 
     def __init__(self, levels):
+        '''
+        Initializer. Use the levels data to find self.imwidth and self.imheight. Initialize 
+        self.x0, self.y0 to the origin and self.x1, self.y1 to the opposite corner of image data.
+
+        Parameters
+        ----------
+        self : self
+            Implicit reference to self.
+        levels : 2D Array-like
+            2D array-like holding levels data of each pixel in an image. Note, the levels data
+            is not the same thing as color data. The pixel colors should first be preprocessed, 
+            e.g. using class ImageProcessing.
+        '''
         self.levels = levels
         self.imwidth = len(levels[0])
         self.imheight = len(levels)
@@ -420,9 +457,51 @@ class LevelFilter:
         self.y1 = self.imheight
 
     def filterfunc(pos, width, height):
+        '''
+        The function giving the maximum level of pseudo-curve. The default implementation for this
+        parent class just returns level 0, so don't sub-divide at all.
+
+        This function should be over-ridden by classes that inherit from the class LevelFilter. 
+
+        Parameters
+        ----------
+        pos : Array-like
+            Should have two members holding the x and y position.
+        width : Float
+            The width of the sub-square.
+        height : Float
+            The height of the sub-square.
+
+        Returns
+        -------
+        Int
+            Maximum level of pseudo-curve to assign to this sub-square. The default implementation always
+            returns 0. 
+        '''
         return 0
 
     def setupxy(self, pos, width, height):
+        '''
+        Finds the indices in the level data that occur within the rectangle of a given width and height with
+        a given corner position. Note that this rectangle data can be composed of floating point values,
+        but the the indices we find need to be valid integers representing indices in our 2D array of
+        pixel levels. This range of pixel data should be used by filterfunc to find max levels based
+        on image data.
+
+        The corner indices of the selected pixel data is stored in self.x0, self.x1, self.y0, and self.y1.
+
+        Parameters
+        ----------
+        self : self
+            Implicit reference to self.
+        pos : Array-like
+            Has two members representing the x and y positions of the corner of the rectangle. Positons
+            can be floating point values.
+        width : Float
+            The width of the rectangle.
+        height : Float
+            The height of the rectangle.
+        '''
         self.x0 = int(pos[0])
         self.x0 = max(self.x0, 0)
         self.x1 = int(self.x0 + width)
