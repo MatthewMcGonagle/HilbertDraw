@@ -351,14 +351,45 @@ class HilbertTreeMaxed(HilbertTree):
 
 
 class ImageProcessing:
+    '''
+    Namespace with functions to handle preprocessing of black and white image (pixel values are integers 
+    in the range 0 to 255). Use the member function bwtolevels to turn pixel colors into level numbers. 
+    The transformation between the two isn't linear.
+    '''
 
     def invertcolor(ba):
+        '''
+        Takes array-like holding pixel color and pixel alpha, and then turns it into inverted color 
+        represented as an Int.
+        
+        Parameters
+        ----------
+        ba : Array-like
+            Should have two members. ba[0] is the color of the pixel. ba[1] is the alpha of the pixel. 
+        
+        Returns
+        -------
+        Int 
+            The inverted color of the pixel. 
+        '''
         if ba[1] == 0:
             return 0 
         else:
             return 255 - ba[0]
     
     def bwtolevels(bw, minlevel, maxlevel):
+        '''
+        Convert black and white color (Integer 0 to 255) into level numbers. Does conversion in-place.
+
+        Parameters
+        ----------
+        bw : 2D Array-like
+            2D Array of holding Integers (0 to 255) representing black and white colors.
+        minlevel : Int
+            The minimum Hilbert pseudo-curve level to assign to any color.
+        maxlevel : Int
+            The maximum Hilbert pseudo-curve level to assign to any color.
+        '''
         base = 2.5
         maxbw = 0
         for i in range(len(bw)):
