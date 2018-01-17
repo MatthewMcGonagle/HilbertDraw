@@ -9,7 +9,7 @@ import random
 
 class SquareSymmetry:
     '''
-        Class for representing rotations and reflections of sub-squares that are used in the
+        Class for representing rotations and reflections of sub-rectanglesquares that are used in the
         iterative process of generating the Hilbert pseudo-curves.
 
         Each symmetry is represented as rotation**self.rotation * reflection**self.reflection.        
@@ -230,35 +230,39 @@ class HilbertTree:
 
 class HilbertTreeMaxed(HilbertTree):
     '''
-    Class to draw a picture using different levels of Hilbert pseudo-curves. 
-    To determine whether to sub-divide a sub-square into the next level, use a max function 
-    f(x,y) for this sub-square. This max function gives the maximum level to descend to for 
-    any sub-square with position at (x,y). 
+    Class to draw a picture using different levels of Hilbert pseudo-curves. Now we allow the use of
+    rectangles instead of explicitly squares, i.e. the width and height may be different.
+    To determine whether to sub-divide a sub-rectangle into the next level, use a max function 
+    f(x,y) for this sub-rectangle. This max function gives the maximum level to descend to for 
+    any sub-rectangle with position at (x,y). 
 
     So for an input image, one should use a maximum function f(x,y) defined using the 
     pixel colors in the image. 
 
     An instance of this class represents a node in the quad-tree that gives the sub-divisions of the 
-    sub-squares defining the Hilbert pseudo-curves.
+    sub-rectangles defining the Hilbert pseudo-curves.
 
     This class inherits properties from HilbertTree.
 
     Members
     -------
     self.symmetry : SquareSymmetry
-        Represents the orientation of this sub-square relative to the standard orientation. 
+        Represents the orientation of this sub-rectangle relative to the standard orientation. 
     self.level : Int
         Represents the level of the Hilbert pseudo-curve that this node is a part of.
     self.position : Array-like
         Has two members. Represents the position (x,y) of this node in space.
     self.width : Float 
-        The width of this sub-square.
+        The width of this sub-rectangle .
     self.height : Float 
-        The height of this sub-square.
+        The height of this sub-rectangle .
     self.maxfunc : function
-        A function from positions (x,y) (Array-like with two members) into Int. The function
-            should give the max level of Hilbert pseudo-curve to associate with a sub-square at
-            position (x,y).
+        A function with parameters:
+                1. positions (x,y) (Array-like with two members),
+                2. Width of sub-rectangle (Float), 
+                3. Height of sub-rectangle (Float)
+            into Int. The function should give the max level of Hilbert pseudo-curve to 
+            associate with a sub-rectangle at position (x,y).
     '''
 
     def __init__(self, symmetry, level, position, width, height, maxfunc):
@@ -270,19 +274,19 @@ class HilbertTreeMaxed(HilbertTree):
         self : self
             Implicit reference to self.
         symmetry : SquareSymmetry
-            Reperesents the orientation of this sub-square relative to the standard orientation.
+            Reperesents the orientation of this sub-rectangle relative to the standard orientation.
         level : Int
-            The level of Hilbert pseudo-curve to associate with this sub-square node.
+            The level of Hilbert pseudo-curve to associate with this sub-rectangle node.
         position : Array-like
-            Should have two elements representing the (x,y) position of this sub-square.
+            Should have two elements representing the (x,y) position of this sub-rectangle .
         width : Int
-            The width of this sub-square.
+            The width of this sub-rectangle .
         height : Int
-            The height of this sub-square.
+            The height of this sub-rectangle .
         maxfunc : function
-            The function to determine how far to sub-divide a given sub-square. Should be a function from 
+            The function to determine how far to sub-divide a given sub-rectangle . Should be a function from 
             positions (x,y) (represented as array-likes with two elements) into Int. The position
-            of a sub-square is used to determine whether to sub-divide further based on the output
+            of a sub-rectangle is used to determine whether to sub-divide further based on the output
             of this function.
         ''' 
         super().__init__(symmetry, level)
@@ -293,10 +297,10 @@ class HilbertTreeMaxed(HilbertTree):
 
     def generatechildren(self, numlevels):
         '''
-        Generates the children nodes of this sub-square. This over-rides the generatechildren of the 
+        Generates the children nodes of this sub-rectangle . This over-rides the generatechildren of the 
         parent class HilbertTree. Now we use self.maxfunc to decide if we have reached a high enough
         level of pseudo-curve using self.position. We also put a global maximum on the levels using 
-        the parameter numlevels. If we have not reached the max level for this sub-square, then 
+        the parameter numlevels. If we have not reached the max level for this sub-rectangle , then 
         we sub-divide and find the children.
         
         Parameters
@@ -411,7 +415,7 @@ class ImageProcessing:
 class LevelFilter:
     '''
     Template class that provides functionality for contructing functions for determining the max
-    number of levels of sub-square to assign to any given position. Note, this parent class doesn't
+    number of levels of sub-rectangle to assign to any given position. Note, this parent class doesn't
     really have any actual funtionality for constructing such functions. It just provides functions that
     will be necessary for constructing them from a 2D array of pixel levels.
 
@@ -425,13 +429,13 @@ class LevelFilter:
     imheight : Int
         The height of the levels data coming from the image. 
     x0 : Int
-        The x position of the first corner of the image data to associate with a sub-square.
+        The x position of the first corner of the image data to associate with a sub-rectangle .
     x1 : Int
-        The x position of the second corner of the image data to associate with a sub-square.
+        The x position of the second corner of the image data to associate with a sub-rectangle .
     y0 : Int
-        The y position of the first corner of the image data to associate with a sub-square.
+        The y position of the first corner of the image data to associate with a sub-rectangle .
     y1 : Int
-        The y position of the second corner of the image data to associate with a sub-square. 
+        The y position of the second corner of the image data to associate with a sub-rectangle . 
     '''
 
     def __init__(self, levels):
@@ -468,14 +472,14 @@ class LevelFilter:
         pos : Array-like
             Should have two members holding the x and y position.
         width : Float
-            The width of the sub-square.
+            The width of the sub-rectangle.
         height : Float
-            The height of the sub-square.
+            The height of the sub-rectangle.
 
         Returns
         -------
         Int
-            Maximum level of pseudo-curve to assign to this sub-square. The default implementation always
+            Maximum level of pseudo-curve to assign to this sub-rectangle. The default implementation always
             returns 0. 
         '''
         return 0
@@ -514,8 +518,8 @@ class LevelFilter:
 
 class UseMax(LevelFilter):
     '''
-    Class for setting the max level Hilbert pseudo-curve function of a sub-square is given by finding
-    the maximum level value inside the pixel values contained within the sub-square.
+    Class for setting the max level Hilbert pseudo-curve function of a sub-rectangle is given by finding
+    the maximum level value inside the pixel values contained within the sub-rectangle.
 
     The Parent class is LevelFilter, and the class UseMax contains no extra member variables.
     '''
@@ -523,8 +527,8 @@ class UseMax(LevelFilter):
     def filterfunc(self, pos, width, height):
         '''
         The max level Hilbert pseudo-curve function for the class UseMax. The max level for the 
-        subsquare of certain position, width, and height is given by the maximum pixel level for
-        the portion of the pixels contained within the sub-square.
+        sub-rectangle of certain position, width, and height is given by the maximum pixel level for
+        the portion of the pixels contained within the sub-rectangle.
 
         Parameters
         ----------
@@ -532,17 +536,17 @@ class UseMax(LevelFilter):
             Implicit reference to self.
         pos : Array-like
             Should contain two members of floating point values giving the x and y position of the
-            sub-square.
+            sub-rectangle.
         width : Float
-            The width of the sub-square.
+            The width of the sub-rectangle.
         height : Float
-            The height of the sub-square.
+            The height of the sub-rectangle.
 
         Returns
         -------
         Int
             Maximum pixel level for all of the pixels contained within the rectangle defined by the
-            position sub-square, the sub-squares width, and the sub-squares height.
+            position sub-rectangle, the sub-rectangles width, and the sub-rectangles height.
         '''
         floorlevel = 0
         levelsmax = 0
@@ -560,14 +564,14 @@ class UseMax(LevelFilter):
 class UseAverage(LevelFilter):
     '''
     Class for defining the maximum Hilbert pseudo-curve level to be the average of the pixel levels 
-    for those pixels that occur within the sub-square.
+    for those pixels that occur within the sub-rectangle.
     
     Parent class is LevelFilter, and the class UseAverage contains no member variables not in LevelFilter.
     '''
 
     def filterfunc(self, pos, width, height):
         '''
-        Function giving the maximum Hilbert pseudo-curve level for the sub-square of a given position, width,
+        Function giving the maximum Hilbert pseudo-curve level for the sub-rectangle of a given position, width,
         and height. The max level is the average of all of the pixel level data for the pixels within the
         rectangle of the same position, width, and height. 
     
@@ -576,17 +580,17 @@ class UseAverage(LevelFilter):
         self : self
             Implicit reference to self.
         pos : Array-like
-            Should have two floating points values representing the x and y position of the sub-square.
+            Should have two floating points values representing the x and y position of the sub-rectangle.
         width : Float
-            The width of the sub-square.
+            The width of the sub-rectangle.
         height : Float
-            The height of the sub-square. 
+            The height of the sub-rectangle. 
 
         Returns
         -------
         Float
-            Maximum level for Hilbert pseudo-curves for given sub-square; is the average of all pixel levels
-            for pixels within rectangle of same position, width, and height as the sub-square.
+            Maximum level for Hilbert pseudo-curves for given sub-rectangle; is the average of all pixel levels
+            for pixels within rectangle of same position, width, and height as the sub-rectangle.
         '''
         dx = 1
         dy = 1
@@ -607,8 +611,8 @@ class UseAverage(LevelFilter):
 
 class UseMajority(LevelFilter):
     '''
-    Class for using the majority of levels of pixels within sub-square to determine the max level of Hilbert
-    pseudo-curve. Uses the pixel data that is contained in the rectangle defined by the sub-square's position,
+    Class for using the majority of levels of pixels within sub-rectangle to determine the max level of Hilbert
+    pseudo-curve. Uses the pixel data that is contained in the rectangle defined by the sub-rectangle's position,
     width, and height to find the max level. The max level is defined to be the majority level over all of this
     subset of data.
 
@@ -641,10 +645,10 @@ class UseMajority(LevelFilter):
 
     def filterfunc(self, pos, width, height):
         '''
-        Function to determine max level Hilbert pseudo-curve for given sub-square. Use the majority pixel level
-        for the pixel data contained within the sub-square. There is also a filter involving meeting a minimum
+        Function to determine max level Hilbert pseudo-curve for given sub-rectangle. Use the majority pixel level
+        for the pixel data contained within the sub-rectangle. There is also a filter involving meeting a minimum
         percent of the given pixels. If none of the levels meets the minimum floor, then it returns the max
-        level, insuring the sub-square will be sub-divided if it isn't at the max level. 
+        level, insuring the sub-rectangle will be sub-divided if it isn't at the max level. 
         
         Parameters
         ----------
@@ -652,16 +656,16 @@ class UseMajority(LevelFilter):
             Implicit reference to self.
         pos : Array-like
             Should be array-like containing two floating point values representing the x and y coordinate of
-            the position of the sub-square.
+            the position of the sub-rectangle.
         width : Float
-            The width of the sub-square.
+            The width of the sub-rectangle.
         height : Float
-            The height of the sub-square.
+            The height of the sub-rectangle.
 
         Returns
         -------
         Int
-            The majority level among the pixel level data for the pixels that are inside the sub-square if the
+            The majority level among the pixel level data for the pixels that are inside the sub-rectangle if the
             majority is above a certain floor percentage; else, return the max number of levels in the tree.
         '''
         floorpercent = 0.99
