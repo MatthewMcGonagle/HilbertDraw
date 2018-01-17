@@ -700,8 +700,42 @@ class UseMajority(LevelFilter):
             return self.numlevels+1
 
 class CircleFilter(LevelFilter):
+    '''
+    Class for creating a max level Hilbert pseudo-curve function that is for drawing randomly
+    placed circles of random radius and random level. Parent class is class LevelFilter.
+
+    Members
+    -------
+    self.levels : 2D array-like
+        Ignored.
+    self.maxlevel : Int
+        Maximum possible level for Hilbert pseudo-curves.
+    self.treewidth : Float
+        Width of rectangular drawing area to put circles.
+    self.treeheight : Float
+        Height of rectangular drawing area to put circles.
+    self.circles : Array-like
+        Each member represents one cirlce. Members are array-likes holding the x position, 
+        y position, radius, and level info of circle.
+    '''
 
     def __init__(self, levels, maxlevel, treewidth, treeheight):
+        '''
+        Initializer. Creates the list of circles.
+        
+        Parameters
+        ----------
+        self : self
+            Implicit reference to self.
+        levels : Int
+            Parameter passed to parent class.
+        maxlevel : Int
+            The maximum level of Hilbert pseudo-curve that a circle will be filled with.
+        treewdith : Float
+            The width of the rectangular area to draw the circles inside.
+        treeheight : Float
+            The height of the rectangular area to draw the circles inside.
+        '''
 
         super().__init__(levels)
 
@@ -716,6 +750,22 @@ class CircleFilter(LevelFilter):
             self.circles.append([xcenter, ycenter, radius, circlelevel])
     
     def circlepointmax(self, pos):
+        '''
+        Given an (x,y) position, find the highest level such that the position is contained in a circle
+        of that level. 
+        
+        Parameters
+        ----------
+        self : self
+            Implicit reference to self.
+        pos : Array-like
+            Should contain two members of floating point values representing the x and y coordinate of the point.
+        
+        Returns
+        -------
+        Int 
+            The largest level such that the point is contained in a circle of that level.
+        '''
         result = 0
         for i in range(len(self.circles)):
             thiscircle = self.circles[i]
@@ -728,6 +778,28 @@ class CircleFilter(LevelFilter):
         return result
     
     def filterfunc(self, pos, width, height):
+        '''
+        Find the largest level of Hilbert pseudo-curve for a given sub-rectangle. This really only depends
+        on the position of the sub-rectangle. Its level is given by the largest level of circle containing the
+        position.
+
+        Parameters
+        ----------
+        self : self
+            Implicit reference to self.
+        pos : Array-like
+            Should contain two members of floating point type representing the (x,y) position of the
+            sub-rectangle.
+        width : Float
+            The width of the sub-rectangle.
+        heigh : Float
+            The height of the sub-rectangle.
+
+        Returns
+        -------
+        Int
+            The largest level of Hilbert pseudo-curve associated to the sub-rectangle.
+        '''
         ncheck = 5
         result = 0
         dx = width / ncheck    
