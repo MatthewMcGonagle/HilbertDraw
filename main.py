@@ -16,6 +16,29 @@ initsymmetry = hd.SquareSymmetry(0,0)
 # Set up the level of Hilbert pseudo-curve to associate with the root rectangle.
 initlevel = 0
 
+# Let's draw some simple Hilbert pseudo-curves to demonstrate what they look like.
+
+plt.figure(figsize = (3.5, 3.5))
+for level in range(4):
+    tree = hd.HilbertTree(initsymmetry, initlevel) 
+    tree.generatechildren(level)
+    positions = []
+    # Tree will start at (0,0) and be in a square whose sides are length 100.
+    tree.generatepositions(positions, [0.0, 0.0], 100.0)
+    positions = np.array(positions)
+
+    # Now plot the result for this level.
+
+    plt.clf()
+    ax = plt.gca()
+    ax.set_xlim([-10, 110])
+    ax.set_ylim([-10, 110])
+    ax.set_title('Pseudo-Hilbert Curve for Level ' + str(level))
+    plt.plot(positions.T[0], positions.T[1])
+    plt.savefig('docs/HilbertLevel' + str(level) + '.svg')
+
+plt.close()
+
 # Set up the maximum level of Hilbert pseudo-curve to use.
 numlevels = 7
 
