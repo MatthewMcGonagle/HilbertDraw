@@ -18,6 +18,8 @@ imagetest.py
 !hilbertcartoon.svg
 !hilbertcartoon.png
 !Outputbw.png
+!docs/Ordering*.svg
+!docs/HilbertLevel*.svg
 
 # ignore pycache
 __pycache__/
