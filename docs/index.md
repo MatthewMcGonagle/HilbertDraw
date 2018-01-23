@@ -5,7 +5,7 @@ title: Hilbert Draw
 
 ## Important Files 
 
-### `Hilbert.py` 
+### `HilbertDraw.py` 
 
 Contains the classes and functions of the module.
 
@@ -31,7 +31,7 @@ The output after processing this with HilbertDraw is
      alt = "HilbertDraw.py processing of Hilbert"
      style = "width:600px;height:600px">
 
-HilbertDraw.py works best with "cartoon-like" drawings that don't have
+`HilbertDraw.py` works best with "cartoon-like" drawings that don't have
 much detail. Furthermore, some pre-processing of colors may be
 necessary. Small areas and fine details should be in darker
 colors. Larger areas lacking detail may have lighter colors, depending
@@ -57,7 +57,7 @@ We start by taking a square and sub-dividing it into four equal parts. In the ea
 * For level 2, the square is divided into 64 parts.
 * For level 3, the square is divided into 256 parts.
 
-The new sub-squares are given an ordering based on an orientation assigned to the square it originally came from. The ordering preserves the ordering of the squares it comes from (so the ordering of each level is added on top of each other similar to the use of ordering in the alphabet in lexical ordering). This is best seens with some pictures:
+The new sub-squares are given an ordering based on an orientation assigned to the square it originally came from. The ordering preserves the ordering of the squares it comes from (so the ordering of each level is added on top of each other similar to the use of ordering in the alphabet in lexical ordering). This is best seen with some pictures:
 
 ![Ordering of Level 0](Ordering0.svg)
 ![Ordering of Level 1](Ordering1.svg)
