@@ -36,6 +36,7 @@ for level in range(4):
     ax.set_title('Pseudo-Hilbert Curve for Level ' + str(level))
     plt.plot(positions.T[0], positions.T[1])
     plt.savefig('docs/HilbertLevel' + str(level) + '.svg')
+    print('Saved docs/HilbertLevel' + str(level) + '.svg')
 
 plt.close()
 
@@ -98,5 +99,5 @@ ax.spines['left'].set_visible(False)
 
 # Save as a picture, and then display the result.
 plt.savefig("Output.png", bbox_inches = "tight", dpi = 300)
+print('Saved Output.png')
 plt.show()
-

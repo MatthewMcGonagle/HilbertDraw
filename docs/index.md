@@ -3,9 +3,15 @@ layout: default
 title: Hilbert Draw
 ---
 
-## Library File
+## Important Files 
 
-      HilbertDraw.py
+### `Hilbert.py` 
+
+Contains the classes and functions of the module.
+
+### `main.py`
+
+A tutorial of how to use the classes.
 
 ## About
 
